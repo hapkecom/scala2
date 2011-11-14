@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================================= -->
+<!-- Build file for: scala2                                               -->
+<!-- ======================================================================= -->
+<project default="war" basedir="." name="scala2">
+
+	<!-- =================================================================== -->
+	<!-- Definition of properies and directories                             -->
+	<!-- =================================================================== -->
+	<property file="${user.home}/.ant.properties"/>
+	<property environment="env"/>
+	<!-- properies and directories for business logic -->
+	<property name="src.dir" value="${basedir}/src/main"/>
+	<property name="src.java.dir" value="${src.dir}/java"/>
+	<property name="src.scala.dir" value="${src.dir}/scala"/>
+	<property name="src.resources.dir" value="${src.dir}/resources"/>
+	<property name="src.web.dir" value="${src.dir}/web"/>
+	<property name="lib.dir" value="${basedir}/lib/main"/>
+	<property name="build.dir" value="${basedir}/build"/>
+	<property name="build.deploy.dir" value="${build.dir}/deploy"/>
+	<property name="build.classes.dir" value="${build.dir}/classes"/>
+	<property name="build.javadoc.dir" value="${build.dir}/javadoc"/>
+	<!-- properies and directories for testing -->
+	<property name="src.test.dir" value="${basedir}/src/test"/>
+	<property name="src.test.java.dir" value="${src.test.dir}/java"/>
+	<property name="src.test.scala.dir" value="${src.test.dir}/scala"/>
+	<property name="src.test.resources.dir" value="${src.test.dir}/resources"/>
+	<property name="lib.test.dir" value="${basedir}/lib/test"/>
+	<property name="build.test.classes.dir" value="${build.dir}/test-classes"/>
+	<property name="build.test.report.dir" value="${build.dir}/test-report"/>
+	<property name="build.test.report.xml.dir" value="${build.test.report.dir}/xml"/>
+	<property name="build.test.report.html.dir" value="${build.test.report.dir}/html"/>
+	<property name="build.test.javadoc.dir" value="${build.dir}/test-javadoc"/>
+	<property name="test.suite" value="all-test"/>
+	<!-- properies and directories for deployment -->
+	<property name="deploy.war.dir" value="/data/jboss/standalone/deployments"/>
+	
+
+	<!-- =================================================================== -->
+	<!-- Import common build file(s)                                         -->
+	<!-- =================================================================== -->
+	<!-- the following include(s) must be placed after the directory propery declarations --> 
+	<import file="build-test.xml"/>
+
+	<!-- =================================================================== -->
+	<!-- Clean up                                                            -->
+	<!-- =================================================================== -->
+	<target name="clean" depends="clean-test" description="clean all generated files, inclusive testing files">
+		<delete verbose="true" dir="${build.dir}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Initialization / printout of the used properties                    -->
+	<!-- =================================================================== -->
+	<target name="init">
+		<echo message="build.dir = build"/>
+		<echo message="build.compiler = ${build.compiler}"/>
+		<echo message="user.home = ${user.home}"/>
+		<echo message="java.home = ${java.home}"/>
+
+		<echo message="ant.home = ${ant.home}"/>
+		<echo message="build.test.report.dir = ${build.test.report.dir}"/>
+		<echo message=""/>
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.classes.dir}"/>
+		<!-- mkdir dir="${build.dir}/META-INF" -->
+		
+	    <taskdef resource="scala/tools/ant/antlib.xml">
+	      <classpath>
+	        <pathelement location="${lib.dir}/scala-compiler.jar"   />
+	        <pathelement location="${lib.dir}/scala-library.jar"   />
+	      </classpath>
+	    </taskdef>
+		
+		<tstamp>
+		  <format property="timestamp_utc" pattern="yyyy-MM-dd HH:mm:ss" locale="en,UK" timezone="UTC"/>
+		</tstamp>
+		<echo>timestamp = ${timestamp_utc} UTC</echo>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Definition of (class) path                                          -->
+	<!-- =================================================================== -->
+	<path id="base.path">
+		<pathelement location="${java.class.path}"/>
+        <fileset dir="${lib.dir}">
+            <include name="javax.*.jar"/>
+            <include name="*.jar"/>
+        </fileset>
+		<pathelement location="${lib.dir}/ojdbc14.jar"/>
+	</path>
+	
+
+	<!-- =================================================================== -->
+	<!-- Compiliation of Java business classes                               -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="init">
+		<mkdir dir="${build.classes.dir}"/>
+		<property name="cp" refid="base.path"/>
+
+		<!-- compile Scala (must be before compile Java!) -->
+	    <scalac destdir="${build.classes.dir}"
+	            classpathref="base.path">
+	    	<src path="${src.dir}"/>
+	      	<include name="scala/**/*.scala"   />
+	      	<include name="java/**/*.java"   />
+	      	<exclude name="scala/**/*.noscala"   />
+	    </scalac>
+
+	    <!-- compile Java -->
+		<javac destdir="${build.classes.dir}" debug="on" deprecation="off"
+	           optimize="on" classpathref="base.path" encoding="utf-8">
+			<src path="${src.java.dir}"/>
+		</javac>
+
+		<!-- copy resource files -->
+		<copy todir="${build.classes.dir}">
+		    <fileset dir="${src.resources.dir}">
+		      <exclude name="**/*.java"/>
+		      <exclude name="**/*.bak"/>
+		    </fileset>
+	  	</copy>
+	</target>
+
+	<target name="build" depends="compile" description="build" />
+
+	<!-- =================================================================== -->
+	<!-- Generation of WAR archive                                           -->
+	<!-- =================================================================== -->
+	<target name="war" depends="clean,compile" description="build the war">
+		<mkdir dir="${build.deploy.dir}"/>
+		<war destfile="${build.deploy.dir}/scala2.war"
+			webxml = "${src.web.dir}/WEB-INF/web.xml">
+			<classes dir="${build.classes.dir}"/>
+			<fileset dir="${src.web.dir}"
+				excludes="WEB-INF/web.xml">
+			</fileset>
+			<lib dir="${lib.dir}">
+				<include name = "*.jar"/>
+			</lib>
+		</war>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Deployment to app server                                            -->
+	<!-- =================================================================== -->
+	<target name="deploy" depends="war">
+		<!-- copy war files -->
+		<copy todir="${deploy.war.dir}">
+		    <fileset dir="${build.deploy.dir}">
+				<include name = "*.war"/>
+		    </fileset>
+	  	</copy>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Generate javadoc                                                    -->
+	<!-- =================================================================== -->
+	<target name="javadoc" depends="war" description="generate javadoc of the business classes">
+		<mkdir dir="${build.javadoc.dir}"/>
+		
+		<javadoc sourcepath="${src.java.dir}"
+			     classpathref="base.path"
+		         defaultexcludes="yes"
+		         destdir="${build.javadoc.dir}"
+		         author="true"
+		         version="true"
+		         use="true"
+		         windowtitle="Business Classes - fapcas - ${timestamp_utc} UTC">
+		</javadoc>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Definition of test suites                                           -->
+	<!-- =================================================================== -->
+	<patternset id="local-test">
+	    <include name="c/h/**/TrivialLocalTest.class"/>
+	    <include name="c/h**/*LocalTest.class"/>
+	</patternset>
+
+	<patternset id="remote-test">
+	    <include name="c/h/**/TrivialLocalTest.class"/>
+	    <include name="c/h/**/*RemoteTest.class"/>
+	</patternset>
+
+	<patternset id="all-test">
+	    <include name="c/h/**/TrivialLocalTest.class"/>
+	    <include name="c/h/**/*LocalTest.class"/>
+	    <include name="c/h/**/*RemoteTest.class"/>
+	</patternset>
+	
+</project>

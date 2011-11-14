@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================================= -->
+<!-- Build file - automated testing                                          -->
+<!--              build-common-test.xml                                      -->
+<!-- Attention: This file is shared between multiple projects!!!             -->
+<!-- ======================================================================= -->
+
+<project basedir="." name="build-common-test">
+
+	<!-- properies and directories for testing 
+	     conventions: http://jira.qintern.de/confluence/display/~christian.hapke/Automated+Testing+Conventions -->
+	<property name="src.test.dir" value="${basedir}/src/test"/>
+	<property name="src.test.java.dir" value="${src.test.dir}/java"/>
+	<property name="src.test.resources.dir" value="${src.test.dir}/resources"/>
+	<property name="lib.test.dir" value="${basedir}/lib/test"/>
+	<property name="build.test.classes.dir" value="${build.dir}/test-classes"/>
+	<property name="build.test.report.dir" value="${build.dir}/test-report"/>
+	<property name="build.test.report.xml.dir" value="${build.test.report.dir}/xml"/>
+	<property name="build.test.report.html.dir" value="${build.test.report.dir}/html"/>
+	<property name="build.test.javadoc.dir" value="${build.dir}/test-javadoc"/>
+	<property name="test.suite" value="local-test"/>
+
+	<!-- =================================================================== -->
+	<!-- Clean up                                                            -->
+	<!-- =================================================================== -->
+	<target name="clean-test" description="clean all generated testing files" >
+		<delete verbose="true" dir="${build.test.classes.dir}" />
+		<delete verbose="true" dir="${build.test.report.dir}" />
+		<delete verbose="true" dir="${build.test.javadoc.dir}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Initialization / printout of the used properties                    -->
+	<!-- =================================================================== -->
+	<target name="init-tiemstamp">
+		<tstamp>
+		  <format property="timestamp_utc" pattern="yyyy-MM-dd HH:mm:ss" locale="en,UK" timezone="UTC"/>
+		</tstamp>
+		<echo>timestamp_utc = ${timestamp_utc} UTC</echo>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Definition of (class) path                                          -->
+	<!-- =================================================================== -->
+	<path id="test.path">
+		<pathelement location="${build.test.classes.dir}"/>
+		<fileset dir="${lib.test.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<path refid="base.path"/>
+		<pathelement location="${build.classes.dir}"/>
+		<pathelement location="${build.generate.dir}"/>
+	</path>
+
+	<!-- =================================================================== -->
+	<!-- Compilation of JUnit test case classes                              -->
+	<!-- =================================================================== -->
+	<target name="build-test" depends="init" description="compile the JUnit test classes">
+ 		<mkdir dir="${build.test.classes.dir}"/>
+
+		<!-- compile -->
+		<javac destdir="${build.test.classes.dir}" debug="on" deprecation="off"
+	           optimize="on" classpathref="test.path" encoding="iso-8859-1">
+			<src path="${src.test.java.dir}"/>
+		</javac>
+
+		<!-- copy resource files -->
+		<copy todir="${build.test.classes.dir}" failonerror="false">
+				<fileset dir="${src.test.resources.dir}">
+				<exclude name="**/*.java"/>
+			    <exclude name="**/*.bak"/>
+			    <exclude name="**/*~"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Generate javadoc of test cases                                      -->
+	<!-- =================================================================== -->
+	<target name="javadoc-test" depends="build-test,init-tiemstamp" description="generate the javadoc that document the test cases">
+		<mkdir dir="${build.test.javadoc.dir}"/>
+		
+		<javadoc sourcepath="${src.test.java.dir}"
+			     classpathref="test.path"
+		         defaultexcludes="yes"
+		         destdir="${build.test.javadoc.dir}"
+		         author="true"
+		         version="true"
+		         use="true"
+		         windowtitle="Test Cases - ${project.title} - ${timestamp_utc} UTC">
+		</javadoc>
+	</target>
+	
+	<!-- =================================================================== -->
+	<!-- Execution of JUnit test cases                                       -->
+	<!-- =================================================================== -->
+	<target name="run-test" depends="init,init-tiemstamp" description="run a test suite or a single test class - targets  clean + build + build-test  must be called before">
+	      <mkdir dir="${build.test.report.dir}"/>
+	      <mkdir dir="${build.test.report.dir}/xml"/>
+
+		<!-- show properties -->
+		<echo>Use the following properties (can be overwritten with -Dkey=value):</echo>
+		<echo>    test.suite (e.g. "local-test")                         = ${test.suite}</echo>
+		<echo>    test.class (e.g. "c/h/TrivialLocalTest.class)          = ${test.class}</echo>
+		<echo>    test.base.url (needed only for some test cases)        = ${test.base.url}</echo>
+		<echo>    test.server.host (needed only for some test cases)     = ${test.server.host}</echo>
+		
+		<!-- execute test(s) -->
+		<mkdir dir="${build.test.report.xml.dir}"/>
+		<echo/>
+		<antcall target="run-test-testsuite" />
+		<echo/>
+		<antcall target="run-test-singletestclass" />
+		<echo/>
+		
+		<!-- generate HTML report -->
+		<mkdir dir="${build.test.report.html.dir}"/>
+		<junitreport todir="${build.test.report.xml.dir}">
+		    <fileset dir="${build.test.report.xml.dir}">
+		      <include name="TEST-*.xml" />
+		    </fileset>
+			<report todir="${build.test.report.html.dir}">
+				<param name="TITLE" expression="Test Results - ${project.title} - ${test.suite} - ${timestamp_utc} UTC"/>
+					
+			</report>
+		</junitreport>
+
+	</target>
+
+	<target name="run-test-testsuite" unless="test.class">
+		<echo>Run JUnit for test suite now ...</echo>
+		<junit fork="yes" haltonfailure="no" printsummary="yes" showoutput="yes">
+			<jvmarg value="-Dtest.base.url=${test.base.url}"/>
+			<jvmarg value="-Dtest.server.host=${test.server.host}"/>
+		    <formatter type="xml" />
+		    <classpath refid="test.path" />
+		    <batchtest fork="yes" todir="${build.test.report.xml.dir}">
+		      <fileset dir="${build.test.classes.dir}">
+		        <include name="${test.class}"/>
+		      	<patternset refid="${test.suite}"/> <!-- here is the only difference -->
+		      </fileset>
+		    </batchtest>
+		</junit>
+		<echo>... Finished running test suite</echo>
+	</target>
+
+	<target name="run-test-singletestclass" if="test.class">
+		<echo>Run JUnit for single test class now ...</echo>
+		<junit fork="yes" haltonfailure="no" printsummary="yes" showoutput="yes">
+			<jvmarg value="-Dtest.base.url=${test.base.url}"/>
+			<jvmarg value="-Dtest.server.host=${test.server.host}"/>
+		    <formatter type="xml" />
+		    <classpath refid="test.path" />
+		    <batchtest fork="yes" todir="${build.test.report.xml.dir}">
+		      <fileset dir="${build.test.classes.dir}">
+		        <include name="${test.class}"/>
+		      </fileset>
+		    </batchtest>
+		</junit>
+		<echo>... Finished running single test class</echo>
+	</target>
+
+</project>

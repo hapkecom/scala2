@@ -88,7 +88,6 @@
             <include name="javax.*.jar"/>
             <include name="*.jar"/>
         </fileset>
-		<pathelement location="${lib.dir}/ojdbc14.jar"/>
 	</path>
 	
 

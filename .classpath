@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/main/javax.faces-api-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/main/scala-compiler.jar"/>
 	<classpathentry kind="lib" path="lib/main/javax.ejb.jar"/>
+	<classpathentry kind="lib" path="lib/main/javax.persistence.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

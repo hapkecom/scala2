@@ -26,6 +26,24 @@
 					</f:facet>
 					<h:outputText value="#{item.itemtypeId}" />
 				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Encryption" />
+					</f:facet>
+					<h:outputText value="#{item.encryption}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Encrypted Value" />
+					</f:facet>
+					<h:outputText value="#{item.encryptedValue}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Encrypted Comment" />
+					</f:facet>
+					<h:outputText value="#{item.encryptedComment}" />
+				</h:column>
 
 				<h:column>
 					<f:facet name="header">

@@ -6,12 +6,14 @@ import javax.persistence.Id
 import javax.persistence.GenerationType
 import scala.reflect.BeanProperty
 import javax.persistence.Column
+import javax.persistence.SequenceGenerator
 
 @Entity
-@NamedQuery(name = "Item.findAllByGroupId", query = "SELECT i FROM Item i WHERE i.groupId = :groupId")
+@NamedQuery(name = "Item.findAllByGroupId", query = "SELECT i FROM Item i WHERE i.groupId = :groupId ORDER BY i.itemId")
 class Item {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator="ItemIdSeq")
+	@SequenceGenerator(name="ItemIdSeq",sequenceName="ITEM_ID_SEQ", allocationSize=1)
 	@BeanProperty
 	@Column(name="item_id")
 	var itemId : Long = _
@@ -34,4 +36,6 @@ class Item {
 	@BeanProperty
 	@Column(name="encrypted_comment")
 	var encryptedComment : String = _
+	
+	override def toString = "Item(item_id="+itemId+", encrypted_value="+encryptedValue+")";
 }

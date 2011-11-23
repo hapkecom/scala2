@@ -9,6 +9,8 @@ import javax.faces.model.DataModel
 import javax.inject.Named
 import javax.enterprise.context.SessionScoped
 import javax.enterprise.context.ConversationScoped
+import javax.enterprise.context.Conversation
+import javax.inject.Inject
 
 @Named
 @ConversationScoped
@@ -21,6 +23,9 @@ class ItemBean extends Serializable {
   val groupId = 1
   @EJB
   private var dbService: DBService = _
+
+  @Inject
+  private var conversation: Conversation = _
   
   @BeanProperty
   var items: ListDataModel[Item] = _
@@ -30,13 +35,10 @@ class ItemBean extends Serializable {
   
   @PostConstruct
   def init() {
-    reload();    
+    conversation.begin();   
+    reload();
   }
 
-  def getBooks: DataModel[Item] = {
-    items
-  }
-  
   def reload() {
     items = new ListDataModel[Item]()
     items.setWrappedData(dbService.getAllItemsJavaList(groupId))

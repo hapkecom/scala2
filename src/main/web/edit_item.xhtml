@@ -11,16 +11,14 @@
     <h:body>
     	<h3>Edit Item</h3>
     	<h:form id="form">
-    		<f:set var="item" value="#{ItemBean.currentItem}"/>
-    		
-    	   <h:outputText value="#{item.itemId}"></h:outputText>
-    	   <h:outputText value="#{item.itemtypeId}"></h:outputText>
-    	   <h:outputText value="#{item.groupId}"></h:outputText>
-    	   <h:inputText value="#{item.encryption}"></h:inputText>
-    	   <h:inputText value="#{item.encrypted_value}"></h:inputText>
-    	   <h:inputText value="#{item.encrypted_comment}"></h:inputText>
-    	   <h:commandButton value="Save Item" action="#{ItemBean.save}"></h:commandButton>
-    	   <h:commandButton value="Cancel" action="#{ItemBean.cancel}"></h:commandButton>
+    	   <h:outputText value="#{itemBean.currentItem.itemId}"></h:outputText>
+    	   <h:outputText value="#{itemBean.currentItem.itemtypeId}"></h:outputText>
+    	   <h:outputText value="#{itemBean.currentItem.groupId}"></h:outputText>
+    	   <h:inputText value="#{itemBean.currentItem.encryption}"></h:inputText>
+    	   <h:inputText value="#{itemBean.currentItem.encryptedValue}"></h:inputText>
+    	   <h:inputText value="#{itemBean.currentItem.encryptedComment}"></h:inputText>
+    	   <h:commandButton value="Save Item" action="#{itemBean.save}"></h:commandButton>
+    	   <h:commandButton value="Cancel" action="#{itemBean.cancel}"></h:commandButton>
     	</h:form>
     </h:body>
 </html>

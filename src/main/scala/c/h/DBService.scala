@@ -15,10 +15,7 @@ class DBService {
   @PersistenceContext
   protected var em: EntityManager = _
   
-  
-  def foo() = {
-    1
-  }
+  val DefaultGroupId = 1L
   
   
   def getAllItemtypes() : Buffer[Itemtype] =  {
@@ -46,7 +43,7 @@ class DBService {
     println("getAllItemsJavaList start")
     var r = em.createNamedQuery("Item.findAllByGroupId")
     println(r)
-    var r2 = r.setParameter("groupId", 1L)
+    var r2 = r.setParameter("groupId", DefaultGroupId)
     println(r2)
     var r3 = r2.getResultList.asInstanceOf[java.util.List[Item]]
     println(r3)
@@ -71,6 +68,8 @@ class DBService {
   }
   
   def updateItem(item: Item) {
+    if (item.groupId<=0) { item.groupId = DefaultGroupId }
+	println("update: "+item)
     em.merge(item)
   }
   

@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+
+<ui:composition>
+	<h:head>
+		<h1><h:outputText value="Items" /></h1>
+	</h:head>
+
+	<h:body>
+		<h:form id="form">
+			<h:dataTable value="#{ItemBean.items}"
+				var="item" border="1">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Id" />
+					</f:facet>
+					<h:outputText value="#{item.itemId}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Itemtype ID" />
+					</f:facet>
+					<h:outputText value="#{item.itemtypeId}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Edit" />
+					</f:facet>
+					<h:commandLink id="edit" action="#{ItemBean.edit}" value="Edit" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Delete" />
+					</f:facet>
+					<h:commandLink id="delete" action="#{ItemBean.delete}"
+						value="Delete" />
+				</h:column>
+
+			</h:dataTable>
+
+			<h:panelGrid columns="1">
+
+				<h:commandButton id="add" action="#{ItemBean.create}"
+					value="Add Item" />
+
+			</h:panelGrid>
+
+
+		</h:form>
+	</h:body>
+</ui:composition>
+</html>

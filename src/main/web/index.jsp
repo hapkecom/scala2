@@ -6,5 +6,7 @@
 	<br />
 	<br />
 	Go to <a href="hello.xhtml">hello JSF page</a>
+	<br />
+	Go to <a href="list_items.xhtml">list items JSF page</a>
    </body>
 </html>

@@ -12,7 +12,7 @@
 
 	<h:body>
 		<h:form id="form">
-			<h:dataTable value="#{ItemBean.items}"
+			<h:dataTable value="#{itemBean.items}"
 				var="item" border="1">
 				<h:column>
 					<f:facet name="header">
@@ -31,14 +31,14 @@
 					<f:facet name="header">
 						<h:outputText value="Edit" />
 					</f:facet>
-					<h:commandLink id="edit" action="#{ItemBean.edit}" value="Edit" />
+					<h:commandLink id="edit" action="#{itemBean.edit}" value="Edit" />
 				</h:column>
 
 				<h:column>
 					<f:facet name="header">
 						<h:outputText value="Delete" />
 					</f:facet>
-					<h:commandLink id="delete" action="#{ItemBean.delete}"
+					<h:commandLink id="delete" action="#{itemBean.delete}"
 						value="Delete" />
 				</h:column>
 
@@ -46,7 +46,7 @@
 
 			<h:panelGrid columns="1">
 
-				<h:commandButton id="add" action="#{ItemBean.create}"
+				<h:commandButton id="add" action="#{itemBean.create}"
 					value="Add Item" />
 
 			</h:panelGrid>

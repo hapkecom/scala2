@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/main/scala-compiler.jar"/>
 	<classpathentry kind="lib" path="lib/main/javax.ejb.jar"/>
 	<classpathentry kind="lib" path="lib/main/javax.persistence.jar"/>
+	<classpathentry kind="lib" path="lib/main/javaee-api-6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

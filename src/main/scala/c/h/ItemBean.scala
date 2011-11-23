@@ -1,17 +1,18 @@
 package c.h
 
-import javax.faces.bean.ManagedBean
-import javax.faces.bean.SessionScoped
 import scala.reflect.BeanProperty
 import javax.ejb.EJB
 import scala.collection.mutable.Buffer
 import javax.annotation.PostConstruct
 import javax.faces.model.ListDataModel
 import javax.faces.model.DataModel
+import javax.inject.Named
+import javax.enterprise.context.SessionScoped
+import javax.enterprise.context.ConversationScoped
 
-@ManagedBean(name = "ItemBean")
-@SessionScoped
-class ItemBean {
+@Named
+@ConversationScoped
+class ItemBean extends Serializable {
   var myText = "initial myText value"
 
   val listItemsPage = "list_items.xhtml";

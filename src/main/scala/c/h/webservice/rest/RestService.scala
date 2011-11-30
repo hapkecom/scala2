@@ -13,6 +13,11 @@ import javax.ws.rs.PUT
 import javax.ws.rs.Consumes
 import javax.ws.rs.core.MediaType
 
+/**
+ * Class that holds some RESTful web service methods.
+ * 
+ * Base URL: http://<host>:<port>/scala2/services/user/
+ */
 @Path("/user/")
 @Stateless
 class UserRestService {
@@ -21,6 +26,8 @@ class UserRestService {
   @Consumes(Array(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON))
   @Produces(Array(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON))
   /**
+   * Service method to PUT some date and get some result.
+   * 
    * example requests with full data:
         curl -i -H "Content-Type: application/json" -H "Accept: application/json" -X PUT -d '{"firstName":"Grizz","lastName":"HaB","password":{"seed":666,"value":"my789pw"}}' "http://localhost:8080/scala2/services/user/"
         curl -i -H "Content-Type: application/json" -H "Accept: application/xml"  -X PUT -d '{"firstName":"Grizz","lastName":"HaB","password":{"seed":666,"value":"my789pw"}}' "http://localhost:8080/scala2/services/user/"
@@ -35,11 +42,19 @@ class UserRestService {
     
     user
   }
+
   
   @GET
   @Path("{userId}/")
-  @Produces(Array(/*MediaType.APPLICATION_XML,*/ MediaType.APPLICATION_JSON))
-  /** example URL: http://localhost:8080/scala2/services/user/123/ */
+  @Produces(Array(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON))
+  /**
+   * Service method to GET some result data.
+   * Inclusive interpretation of the ID which is encoded in the request URL.
+   * 
+   * example requests:
+        curl -i -H "Accept: application/json" -X GET "http://localhost:8080/scala2/services/user/123/"
+        curl -i -H "Accept: application/xml"  -X GET "http://localhost:8080/scala2/services/user/123/"
+   */
   def getUser(@PathParam("userId") userId: String): RemoteUser = {
     val user = new RemoteUser()
     println("new user="+user);

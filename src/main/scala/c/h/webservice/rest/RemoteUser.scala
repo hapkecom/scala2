@@ -13,21 +13,20 @@ import javax.xml.bind.annotation.XmlRootElement
 import javax.xml.bind.annotation.XmlAccessorType
 import javax.xml.bind.annotation.XmlAccessType
 
-@Path("/itemservice/")
-@Stateless
+/**
+ * In this class we use default JAXB mapping for XML/JSON (de)serialization.
+ *
+ * Hint: the @XmlRootElement annotation is not needed for JSON but for XML
+ */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.NONE)
 class RemoteUser {
   	@BeanProperty
-  	@XmlElement
 	var firstName : String = _
 	
   	@BeanProperty
-  	@XmlElement
 	var lastName : String = _
 	
   	@BeanProperty
-  	@XmlElement
 	var password : RemotePassword = new RemotePassword
 
 	override def toString = "RemoteUser(firstName="+firstName+", lastName="+lastName+", password="+password+")";

@@ -44,4 +44,9 @@
     <url-pattern>*.xhtml</url-pattern>
   </servlet-mapping>
  
+  <!-- RESTful service endpoint mapping -->
+  <servlet-mapping>
+    <servlet-name>javax.ws.rs.core.Application</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
 </web-app>

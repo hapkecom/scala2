@@ -11,14 +11,15 @@ import javax.ws.rs.Produces
 import javax.ws.rs.PathParam
 import javax.ws.rs.PUT
 import javax.ws.rs.Consumes
+import javax.ws.rs.core.MediaType
 
 @Path("/user/")
 @Stateless
 class UserRestService {
  
   @PUT
-  @Consumes(Array("application/xml", "application/json"))
-  @Produces(Array("application/xml", "application/json"))
+  @Consumes(Array(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON))
+  @Produces(Array(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON))
   /**
    * example requests with full data:
         curl -i -H "Content-Type: application/json" -H "Accept: application/json" -X PUT -d '{"firstName":"Grizz","lastName":"HaB","password":{"seed":666,"value":"my789pw"}}' "http://localhost:8080/scala2/services/user/"
@@ -37,7 +38,7 @@ class UserRestService {
   
   @GET
   @Path("{userId}/")
-  @Produces(Array(/*"application/xml",*/ "application/json"))
+  @Produces(Array(/*MediaType.APPLICATION_XML,*/ MediaType.APPLICATION_JSON))
   /** example URL: http://localhost:8080/scala2/services/user/123/ */
   def getUser(@PathParam("userId") userId: String): RemoteUser = {
     val user = new RemoteUser()

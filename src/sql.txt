@@ -1,0 +1,143 @@
+
+SQL Naming conventions
+----------------------
+* summary:
+	* tables names: lower case and singular
+	  (many reasons exists for plural, but the Java class names are usually singular as well - and mapping is easier with the same name)
+	* columns are lowercase
+	* reservered words are uppercase
+	* functions are lowercase
+	* example:
+        CREATE TABLE product (
+            product_id  bigint primary key,
+            name        varchar(100),
+            name_addon  varchar(100),
+            description varchar(1000)
+        );
+        CREATE SEQUENCE product_id START 1001;
+	
+* links:
+	* http://en.wikipedia.org/wiki/SQL
+	* http://www.dba-oracle.com/standards_schema_object_names.htm
+* PL/SQL naming conventions:
+	* http://www.timehole.com/CG_jm2.php#2._Naming_Conventions
+	* http://docs.oracle.com/cd/B10501_01/appdev.920/a96624/02_funds.htm (PL/SQL User's Guide and Reference - Fundamentals of PL/SQL)
+
+
+Conncet to PostreSQL database
+----------------------------- 
+    psql -h localhost myserverdb myuser
+
+
+SQL of the Project
+------------------
+    CREATE TABLE product (
+        product_id bigint primary key,
+        name varchar(100),
+        description varchar(1000)
+    );
+    CREATE SEQUENCE product_id START 1001;
+    INSERT INTO product VALUES (1, 'demo prod', 'manuell eingefuegtes produkt');
+    INSERT INTO product VALUES (2, 'demo prod2', 'manuell eingefuegtes 2. produkt');
+    SELECT * FROM product;
+    SELECT nextval('product_id');
+
+    CREATE TABLE itemtype (
+        itemtype_id bigint primary key,
+        sort bigint not null,
+        name varchar(255) not null
+    );
+    CREATE SEQUENCE itemtype_id_seq START 1;
+    INSERT INTO itemtype (itemtype_id, sort, name) VALUES (nextval('itemtype_id_seq'), 100, 'kasse (+)');
+    INSERT INTO itemtype (itemtype_id, sort, name) VALUES (nextval('itemtype_id_seq'), 200, 'girokonto (+)');
+    INSERT INTO itemtype (itemtype_id, sort, name) VALUES (nextval('itemtype_id_seq'), 300, 'depot (+)');
+    INSERT INTO itemtype (itemtype_id, sort, name) VALUES (nextval('itemtype_id_seq'), 400, 'ueberziehungskredit (-)');
+    INSERT INTO itemtype (itemtype_id, sort, name) VALUES (nextval('itemtype_id_seq'), 500, 'hypothek (-)');
+
+    CREATE TABLE item (
+        item_id           bigint primary key,
+        itemtype_id       bigint not null,
+        group_id          bigint not null,
+        encryption        varchar(255),
+        encrypted_value   varchar(255),
+        encrypted_comment varchar(255)
+    );
+    CREATE SEQUENCE item_id_seq START 1;
+    INSERT INTO item (item_id, itemtype_id, group_id, encryption, encrypted_value, encrypted_comment)
+        VALUES (nextval('item_id_seq'), 11, 1, 'enc1', 'e-val1', 'e-comment1');
+    INSERT INTO item (item_id, itemtype_id, group_id, encryption, encrypted_value, encrypted_comment)
+        VALUES (nextval('item_id_seq'), 12, 1, 'enc2', 'e-val2', 'e-comment2');
+
+
+    --
+    -- accounting app tables
+    --
+    CREATE TABLE version (
+        version_id      bigint primary key,
+        user_id         varchar(255) not null,
+        name            varchar(255) not null
+    );
+    CREATE SEQUENCE version_id_seq START 100;
+    INSERT INTO version (version_id, user_id, name) VALUES (1, 'testuser', 'version a');
+    INSERT INTO version (version_id, user_id, name) VALUES (2, 'testuser', 'version b');
+
+    CREATE TABLE account (
+        account_id      bigint primary key,
+        name            varchar(255) not null,
+        type            int, -- kosten=-1, ertraege=+1, summe der childs=0
+        parent_account_id bigint -- root: null
+    );
+    INSERT INTO account (account_id, name, type, parent_account_id) 
+        VALUES (2000, 'zinsen und ähnliche aufwendungen', -1, null);
+    INSERT INTO account (account_id, name, type, parent_account_id) 
+        VALUES (3000, 'materialaufwAND: rohstoffe', -1, null);
+    INSERT INTO account (account_id, name, type, parent_account_id) 
+        VALUES (4000, 'betriebliche aufwendungen', null, null);
+    INSERT INTO account (account_id, name, type, parent_account_id) 
+        VALUES (4100, 'löhne und gehälter', -1, 4000);
+    INSERT INTO account (account_id, name, type, parent_account_id) 
+        VALUES (4200, 'raumkosten', -1, 4000);
+    INSERT INTO account (account_id, name, type, parent_account_id) 
+        VALUES (8000, 'umsatzerlöse', 1, null);
+
+    CREATE TABLE data (
+        data_id         bigint primary key,
+        version_id      bigint not null,
+        account_id      bigint not null,
+        startdate       date not null,
+        value           int not null
+    );
+    CREATE SEQUENCE data_id_seq START 1;
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 3000, '2011-01-01', 5000);
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 4100, '2011-01-01', 2500);
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 4200, '2011-01-01', 300);
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 8000, '2011-01-01', 9000);
+
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 3000, '2011-02-01', 10000);
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 4100, '2011-02-01', 2500);
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 4200, '2011-02-01', 300);
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 8000, '2011-02-01', 18000);
+
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 3000, '2011-03-01', 15000);
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 4100, '2011-03-01', 2500);
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 4200, '2011-03-01', 300);
+    INSERT INTO data (data_id, version_id, account_id, STARTdate, value)
+        VALUES (nextval('data_id_seq'), 1, 8000, '2011-03-01', 27000);
+
+    SELECT v.name as version_name, d.startdate, a.account_id, a.name as account_name, d.value
+      FROM data d, account a, version v
+        WHERE d.version_id=v.version_id
+          AND d.account_id=a.account_id
+        ORDER BY v.name, d.STARTdate, a.account_id
+    ;

@@ -9,5 +9,8 @@
 	<classpathentry kind="lib" path="lib/main/javax.ejb.jar"/>
 	<classpathentry kind="lib" path="lib/main/javax.persistence.jar"/>
 	<classpathentry kind="lib" path="lib/main/javaee-api-6.0.jar"/>
+	<classpathentry kind="lib" path="lib/main/primefaces-3.0.M4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

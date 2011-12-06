@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<ui:composition>
+	<h:head>
+		<h1><h:outputText value="Einzelne Gewinn- und Verlustrechnung anzeigen und bearbeiten" /></h1>
+	</h:head>
+
+	<h:body>
+		<h:form>
+		    <p:treeTable value="#{planController.root}" var="account">  
+		        <f:facet name="header">  
+		            Gewinn- und Verlustrechnung  
+		        </f:facet>  
+		  
+		        <p:column style="width:150px">  
+		            <f:facet name="header">  
+		                Position (Buchungskonto)  
+		            </f:facet>  
+		            <h:outputText value="#{account.nameString}" />  
+		        </p:column>  
+		  
+		        <p:column style="width:100px">  
+		            <f:facet name="header">  
+		                Jan 2011 (manuell)  
+		            </f:facet>  
+		            <h:outputText value="#{planController.amount(0,account.accountId,'Jan 2011')}" />  
+		        </p:column>  
+
+		  		<ui:repeat var="month" value="#{planController.months}">
+			        <p:column style="width:100px">  
+			            <f:facet name="header">  
+			                #{month}  
+			            </f:facet>  
+			            <h:outputText value="#{planController.amount(0,account.accountId,month)}" />  
+			        </p:column>  
+				</ui:repeat>
+		  		
+		    </p:treeTable>  
+
+			xxx
+			            <br />  
+		  		<ui:repeat var="month" value="#{planController.months}">
+			                #{month}  
+			            <h:outputText value="#{planController.amount(0,1,month)}" />
+			            <br />  
+				</ui:repeat>
+			yyyy
+
+
+		</h:form>
+	</h:body>
+</ui:composition>
+</html>

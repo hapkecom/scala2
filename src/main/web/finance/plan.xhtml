@@ -2,6 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core" 
+	xmlns:c2="http://java.sun.com/jsp/jstl/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
@@ -25,21 +27,36 @@
 		            <h:outputText value="#{account.nameString}" />  
 		        </p:column>  
 		  
-		        <p:column style="width:100px">  
+		        <p:column style="width:100px" rendered="#{planController.months[0]!=null}">  
 		            <f:facet name="header">  
-		                Jan 2011 (manuell)  
+		                #{planController.months[0]}  
 		            </f:facet>  
-		            <h:outputText value="#{planController.amount(0,account.accountId,'Jan 2011')}" />  
+		            <h:outputText value="#{planController.amount(0,account.accountId,planController.months[0])}" />  
 		        </p:column>  
 
-		  		<ui:repeat var="month" value="#{planController.months}">
+		        <p:column style="width:100px" rendered="#{planController.months[1]!=null}">  
+		            <f:facet name="header">  
+		                #{planController.months[1]}  
+		            </f:facet>  
+		            <h:outputText value="#{planController.amount(0,account.accountId,planController.months[1])}" />  
+		        </p:column>  
+
+		        <p:column style="width:100px" rendered="#{planController.months[5]!=null}">  
+		            <f:facet name="header">  
+		                #{planController.months[5]}  
+		            </f:facet>  
+		            <h:outputText value="#{planController.amount(0,account.accountId,planController.months[5])}" />  
+		        </p:column>  
+
+				<!--  be careful with JSTL tag because they are only executed during tree building before tree evaluation -->
+		  		<c2:forEach var="month" items="#{planController.months}">
 			        <p:column style="width:100px">  
 			            <f:facet name="header">  
 			                #{month}  
 			            </f:facet>  
 			            <h:outputText value="#{planController.amount(0,account.accountId,month)}" />  
 			        </p:column>  
-				</ui:repeat>
+				</c2:forEach>
 		  		
 		    </p:treeTable>  
 
@@ -51,8 +68,26 @@
 			            <br />  
 				</ui:repeat>
 			yyyy
+			            <br />  
+		  		<c:forEach var="month" items="#{planController.months}">
+			        <p:column style="width:100px">  
+			            <f:facet name="header">  
+			                #{month}  
+			            </f:facet>  
+			            <h:outputText value="#{planController.amount(0,2,month)}" />  
+			        </p:column>  
+				</c:forEach>
 
-
+		zzzzzz
+		  		<c2:forEach var="month" items="#{planController.months}">
+			        <p:column style="width:100px">  
+			            <f:facet name="header">  
+			                #{month}  
+			            </f:facet>  
+			            <h:outputText value="#{planController.amount(0,2,month)}" />  
+			        </p:column>  
+				</c2:forEach>
+		aaaaaaaaaaaaaaa
 		</h:form>
 	</h:body>
 </ui:composition>

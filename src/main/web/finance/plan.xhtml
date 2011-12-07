@@ -18,22 +18,26 @@
 		        <f:facet name="header">  
 		            Gewinn- und Verlustrechnung  
 		        </f:facet>  
-		  
+
+		  		<ui:remove>
 		  		<!-- paint the account column -->
-		        <p:column style="width:150px">  
+		  		</ui:remove> 
+		        <p:column style="width:250px">
 		            <f:facet name="header">  
 		                Position (Buchungskonto)  
 		            </f:facet>  
 		            <h:outputText value="#{account.nameString}" />  
 		        </p:column>  
 
+		  		<ui:remove>
 				<!-- paint the month columns -->
 				<!--
 				  Be careful with JSTL tag because they are only executed during tree building before tree evaluation.
 				  Consider using attribute similar to 'rendered="#{planController.months[month]!=null}'.
 				  -->
+		  		</ui:remove> 
 		  		<c:forEach var="month" items="#{planController.months}">
-			        <p:column style="width:100px">  
+			        <p:column style="width:150">  
 			            <f:facet name="header">  
 			                #{month}  
 			            </f:facet>  
@@ -41,7 +45,6 @@
 			        </p:column>  
 				</c:forEach>
 		    </p:treeTable>  
-
 		</h:form>
 	</h:body>
 </ui:composition>

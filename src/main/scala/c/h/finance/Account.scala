@@ -3,10 +3,12 @@
  * Copyright (c) 2011 Christian Hapke (hapke.com). All rights reserved.
 */
 package c.h.finance
+import scala.reflect.BeanProperty
 
 
 class Account(accountId0: Long, name: String, sign0: Long) extends Serializable {
-  def accountId: Long = accountId0
+  @BeanProperty
+  var accountId: Long = accountId0
   def sign: Long = sign0
   
   var children = Set[Account]()

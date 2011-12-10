@@ -39,25 +39,38 @@ class PlanController extends Serializable {
   }
   
   def createRoot: TreeNode = {
-    root = new DefaultTreeNode("root", null) 
+    // create account tree
+    val p = new Plan(0)
     
-    /* TODO
-    val einnahmen1000 = new DefaultTreeNode(new Account(1000, "Account E*"), root)
-    val einnahmen1010 = new DefaultTreeNode(new Account(1010, "Account EA"), einnahmen1000)
-    val einnahmen1011 = new DefaultTreeNode(new Account(1011, "Account EAA"), einnahmen1010)
-    val einnahmen1020 = new DefaultTreeNode(new Account(1020, "Account EB"), einnahmen1000)
-
-    val ausgaben2000 = new DefaultTreeNode(new Account(2000, "Account A+"), root)
-    val ausgaben2010 = new DefaultTreeNode(new Account(2010, "Account AA"), ausgaben2000)
-    val ausgaben2020 = new DefaultTreeNode(new Account(2020, "Account AB"), ausgaben2010)
-
-    val gewinn = new DefaultTreeNode(new Account(0, "Gewinn(+)/Verlust(-)"), root)
-    new DefaultTreeNode(new Account(10, "Gewinn(+)/Verlust(-)"), gewinn)
+    // initialize account of the plan
+    p.setAccount(1000, "Account E*", 1, 0)
+    p.setAccount(1010, "Account EA", 1, 1000)
+    p.setAccount(1011, "Account EAA",1, 1010)
+    p.setAccount(1020, "Account EB", 1, 1000)
+    p.setAccount(2000, "Account A+", -1, 0)
+    p.setAccount(2010, "Account AA", -1, 2000)
+    p.setAccount(2020, "Account AB", -1, 2000)
+    p.setParentsOfAccount()
+    println(p.rootAccount)
+    
+    // convert to TreeNodes
+    val root = createTreeNodeFromPlan(p)
     println("root.childs="+root.getChildren())
-    println("gewinn.childs="+gewinn.getChildren())
-    */
     
     root
+  }
+  
+  def createTreeNodeFromPlan(plan: Plan): TreeNode = {
+    val rootTreeNode = new DefaultTreeNode("root", null)
+    plan.rootAccount.children.foreach(a=>createTreeNodeFromAccount(a,rootTreeNode))
+    // sepcial handling of saldo
+    new DefaultTreeNode(plan.rootAccount, rootTreeNode)
+    rootTreeNode
+  }
+  def createTreeNodeFromAccount(account: Account, parentTreeNode: TreeNode): TreeNode = {
+    val treeNode = new DefaultTreeNode(account, parentTreeNode)
+    account.children.foreach(a=>createTreeNodeFromAccount(a,treeNode))
+    treeNode
   }
   
   def amount(versionId: Long, accountId: Long, month/*startdate*/: String): String = {

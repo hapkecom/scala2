@@ -59,9 +59,18 @@
 	<target name="build-test" depends="init" description="compile the JUnit test classes">
  		<mkdir dir="${build.test.classes.dir}"/>
 
-		<!-- compile -->
+		<!-- compile Scala (must be before compile Java!) -->
+	    <scalac destdir="${build.test.classes.dir}"
+	            classpathref="test.path">
+	    	<src path="${src.test.dir}"/>
+	      	<include name="scala/**/*.scala"   />
+	      	<include name="java/**/*.java"   />
+	      	<exclude name="scala/**/*.noscala"   />
+	    </scalac>
+
+	    <!-- compile Java -->
 		<javac destdir="${build.test.classes.dir}" debug="on" deprecation="off"
-	           optimize="on" classpathref="test.path" encoding="iso-8859-1">
+	           optimize="on" classpathref="test.path" encoding="utf-8">
 			<src path="${src.test.java.dir}"/>
 		</javac>
 

@@ -175,7 +175,7 @@
 	<!-- =================================================================== -->
 	<patternset id="local-test">
 	    <include name="c/h/**/TrivialLocalTest.class"/>
-	    <include name="c/h**/*LocalTest.class"/>
+	    <include name="c/h/**/*LocalTest.class"/>
 	</patternset>
 
 	<patternset id="remote-test">

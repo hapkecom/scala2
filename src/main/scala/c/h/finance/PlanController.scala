@@ -1,3 +1,7 @@
+/*
+ * Scala Enterprise test project.
+ * Copyright (c) 2011 Christian Hapke (hapke.com). All rights reserved.
+*/
 package c.h.finance
 
 import scala.reflect.BeanProperty
@@ -37,6 +41,7 @@ class PlanController extends Serializable {
   def createRoot: TreeNode = {
     root = new DefaultTreeNode("root", null) 
     
+    /* TODO
     val einnahmen1000 = new DefaultTreeNode(new Account(1000, "Account E*"), root)
     val einnahmen1010 = new DefaultTreeNode(new Account(1010, "Account EA"), einnahmen1000)
     val einnahmen1011 = new DefaultTreeNode(new Account(1011, "Account EAA"), einnahmen1010)
@@ -48,15 +53,15 @@ class PlanController extends Serializable {
 
     val gewinn = new DefaultTreeNode(new Account(0, "Gewinn(+)/Verlust(-)"), root)
     new DefaultTreeNode(new Account(10, "Gewinn(+)/Verlust(-)"), gewinn)
-    
     println("root.childs="+root.getChildren())
     println("gewinn.childs="+gewinn.getChildren())
+    */
     
     root
   }
   
   def amount(versionId: Long, accountId: Long, month/*startdate*/: String): String = {
-    (new Amount().getAmountString())+"("+accountId+","+month+")"
+    (new Amount(999).getAmountString())+"("+accountId+","+month+")"
   }
 
   var months: Array[String] = Array("Jan 2011", "Feb 2011", "Maerz 2011")

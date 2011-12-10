@@ -1,10 +1,16 @@
+/*
+ * Scala Enterprise test project.
+ * Copyright (c) 2011 Christian Hapke (hapke.com). All rights reserved.
+*/
 package c.h.finance
 
 
-class Amount extends Serializable {
-  var amountInCents: Long = (10000L * Math.random).toLong
+class Amount(initialAmount: Long) extends Serializable {
+  var amountInCents: Long = initialAmount
   
   def getAmountString(): String = {
-    ""+(amountInCents/100)+" EUR"
+    ""+(amountInCents)+" EUR cents"
   }
+  
+  override def toString = getAmountString()
 }

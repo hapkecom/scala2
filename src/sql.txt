@@ -81,24 +81,29 @@ SQL of the Project
     INSERT INTO version (version_id, user_id, name) VALUES (1, 'testuser', 'version a');
     INSERT INTO version (version_id, user_id, name) VALUES (2, 'testuser', 'version b');
 
+	DROP TABLE account;
     CREATE TABLE account (
         account_id      bigint primary key,
         name            varchar(255) not null,
-        type            int, -- kosten=-1, ertraege=+1, summe der childs=0
-        parent_account_id bigint -- root: null
+        sign            int not null,      -- kosten=-1, ertraege=+1, summe der childs=0
+        parent_account_id bigint  not null -- root: 0
     );
-    INSERT INTO account (account_id, name, type, parent_account_id) 
-        VALUES (2000, 'zinsen und ähnliche aufwendungen', -1, null);
-    INSERT INTO account (account_id, name, type, parent_account_id) 
-        VALUES (3000, 'materialaufwAND: rohstoffe', -1, null);
-    INSERT INTO account (account_id, name, type, parent_account_id) 
-        VALUES (4000, 'betriebliche aufwendungen', null, null);
-    INSERT INTO account (account_id, name, type, parent_account_id) 
-        VALUES (4100, 'löhne und gehälter', -1, 4000);
-    INSERT INTO account (account_id, name, type, parent_account_id) 
-        VALUES (4200, 'raumkosten', -1, 4000);
-    INSERT INTO account (account_id, name, type, parent_account_id) 
-        VALUES (8000, 'umsatzerlöse', 1, null);
+    INSERT INTO account (account_id, name, sign, parent_account_id) 
+        VALUES (1,    'Ausgaben', -1, 0);
+    INSERT INTO account (account_id, name, sign, parent_account_id) 
+        VALUES (2000, 'Zinsen und ähnliche Aufwendungen', -1, 1);
+    INSERT INTO account (account_id, name, sign, parent_account_id) 
+        VALUES (3000, 'Materialaufwand: rohstoffe', -1, 1);
+    INSERT INTO account (account_id, name, sign, parent_account_id) 
+        VALUES (4000, 'Betriebliche Aufwendungen', -1, 1);
+    INSERT INTO account (account_id, name, sign, parent_account_id) 
+        VALUES (4100, 'Löhne und Gehälter', -1, 4000);
+    INSERT INTO account (account_id, name, sign, parent_account_id) 
+        VALUES (4200, 'Raumkosten', -1, 4000);
+    INSERT INTO account (account_id, name, sign, parent_account_id) 
+        VALUES (8,    'Einnahmen', 1, 0);
+    INSERT INTO account (account_id, name, sign, parent_account_id) 
+        VALUES (8000, 'Umsatzerlöse', 1, 8);
 
     CREATE TABLE data (
         data_id         bigint primary key,

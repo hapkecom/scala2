@@ -19,14 +19,19 @@ import javax.enterprise.context.SessionScoped
 import c.h.DBService
 import org.primefaces.model.TreeNode
 import org.primefaces.model.DefaultTreeNode
+import c.h.finance.model.AccountService
+import c.h.finance.model.Account
 
 @Named
 //@ConversationScoped
 @SessionScoped
 class PlanController extends Serializable {
   
-  private var root: TreeNode = createRoot  
+  private var root: TreeNode = _ 
  
+  @EJB
+  var accountService: AccountService = _
+
   @EJB
   private var dbService: DBService = _
 
@@ -38,33 +43,22 @@ class PlanController extends Serializable {
     root
   }
   
-  def createRoot: TreeNode = {
-    // create account tree
-    val p = new Plan(0)
-    
-    // initialize account of the plan
-    p.setAccount(1000, "Account E*", 1, 0)
-    p.setAccount(1010, "Account EA", 1, 1000)
-    p.setAccount(1011, "Account EAA",1, 1010)
-    p.setAccount(1020, "Account EB", 1, 1000)
-    p.setAccount(2000, "Account A+", -1, 0)
-    p.setAccount(2010, "Account AA", -1, 2000)
-    p.setAccount(2020, "Account AB", -1, 2000)
-    p.setParentsOfAccount()
-    println(p.rootAccount)
+  @PostConstruct
+  def createRoot {
+    // initialize account tree
+    val p = new Plan(0, accountService)
+    println(accountService.rootAccount)
     
     // convert to TreeNodes
-    val root = createTreeNodeFromPlan(p)
+    root = createTreeNodeFromPlan(p)
     println("root.childs="+root.getChildren())
-    
-    root
   }
   
   def createTreeNodeFromPlan(plan: Plan): TreeNode = {
     val rootTreeNode = new DefaultTreeNode("root", null)
-    plan.rootAccount.children.foreach(a=>createTreeNodeFromAccount(a,rootTreeNode))
-    // sepcial handling of saldo
-    new DefaultTreeNode(plan.rootAccount, rootTreeNode)
+    accountService.rootAccount.children.foreach(a=>createTreeNodeFromAccount(a,rootTreeNode))
+    // special handling of saldo
+    new DefaultTreeNode(accountService.rootAccount, rootTreeNode)
     rootTreeNode
   }
   def createTreeNodeFromAccount(account: Account, parentTreeNode: TreeNode): TreeNode = {
